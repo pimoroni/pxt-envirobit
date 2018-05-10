@@ -372,7 +372,7 @@ namespace envirobit {
      * Return the temperature in degrees celcius * 100
      */
     //% blockId=envirobit_get_temperature_fine
-    //% block="Get temperature"
+    //% block="Get temperature (x100)"
     //% subcategory="Expert"
     export function getTemperatureFine(): number {
         return _bme280.getTemperature()
@@ -392,7 +392,7 @@ namespace envirobit {
      * Get the air pressure in pascals
      */
     //% blockId=envirobit_get_pressure_fine
-    //% block="Get pressure"
+    //% block="Get pressure (x100)"
     //% subcategory="Expert"
     export function getPressureFine(): number {
         return _bme280.getPressure()
@@ -412,7 +412,7 @@ namespace envirobit {
      * Get the relative humidity in % * 100
      */
     //% blockId=envirobit_get_humidity_fine
-    //% block="Get humidity"
+    //% block="Get humidity (x100)"
     //% subcategory="Expert"
     export function getHumidityFine(): number {
         return (_bme280.getHumidity() * 100) / 1024
