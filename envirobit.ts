@@ -258,8 +258,8 @@ namespace envirobit {
      * @param value - sensitivity (0-100)
      */
     //% blockId=envirobit_set_clap_sensitivity
-    //% block="Set clap sensitivty to %sensitivity"
-    //% sensitivity.min=0 sensitivity.max=100 sensitivity.defl=80
+    //% block="Set clap sensitivty to %value"
+    //% value.min=0 value.max=100 value.defl=80
     //% subcategory="Sound" advanced
     export function setClapSensitivity(value: number): void {
         value = Math.clamp(0, 100, value)

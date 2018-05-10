@@ -26,6 +26,14 @@ Each of these functions has a "Fine" equivilent ( available in "Advanced" in blo
 * `envirobit.getPressure()` - Returns the pressure in pascals, 100 pascals = 1 hectopascal
 * `envirobit.getHumidity()` - Returns the humdity in hundreths of a percent: eg: 7515 represents 75.15% relative humidity
 
+For example, this script will scroll the current temperature across micro:bit's display:
+
+```typescript
+basic.forever(() => {
+    basic.showNumber(envirobit.getTemperature())
+})
+```
+
 ### Colour & Light
 
 enviro:bit is also equipped with a tcs3472 colour sensor which consists of multiple light sensors filtered with different coloured windows.
@@ -39,6 +47,24 @@ The following functions get the proportional amount of each colour, adjusted aga
 * `envirobit.getBlue()`
 
 To read the absolute light level, use `envirobit.getLight()`.
+
+For example this script will toggle the micro:bit's LED display on when the light level is less than 50:
+
+```typescript
+basic.forever(() => {
+    if (envirobit.getLight() < 500) {
+        basic.showLeds(`
+            . . # . .
+            . # # # .
+            # # # # #
+            . # # # .
+            . . # . .
+            `)
+    } else {
+        basic.clearScreen()
+    }
+})
+```
 
 ### Sound
 
@@ -54,6 +80,30 @@ The sensitivity of `waitForClap` and `waitForDoubleClap` can be tweaked:
 You can also get the sound level:
 
 * `envirobit.getSoundLevel()` - Returns the current sound level, should return 0 to 443.
+
+For example this script will toggle micro:bit's LED display on and off when you double clap:
+
+```typescript
+let lights = false
+lights = false
+envirobit.setClapSensitivity(80)
+basic.forever(() => {
+    if (envirobit.waitForDoubleClap(1000)) {
+        lights = !(lights)
+    }
+    if (lights) {
+        basic.showLeds(`
+            . . # . .
+            . # # # .
+            # # # # #
+            . # # # .
+            . . # . .
+            `)
+    } else {
+        basic.clearScreen()
+    }
+})
+```
 
 ## License
 
