@@ -313,6 +313,16 @@ namespace envirobit {
     }
 
     /**
+     * Get the light level
+     */
+    //% blockId=envirobit_get_light_clear
+    //% block="Get light level"
+    //% subcategory="Colour & Light"
+    export function getLight(): number {
+        return _tcs3472.light()
+    }
+
+    /**
      * Get the amount of red the colour sensor sees
      */
     //% blockId=envirobit_get_light_red
@@ -353,6 +363,16 @@ namespace envirobit {
     }
 
     /**
+     * Return the temperature in degrees celcius * 100
+     */
+    //% blockId=envirobit_get_temperature_fine
+    //% block="Get temperature"
+    //% subcategory="Air & Weather" advanced
+    export function getTemperatureFine(): number {
+        return _bme280.getTemperature()
+    }
+
+    /**
      * Get the air pressure in hPa
      */
     //% blockId=envirobit_get_pressure
@@ -363,6 +383,16 @@ namespace envirobit {
     }
 
     /**
+     * Get the air pressure in pascals
+     */
+    //% blockId=envirobit_get_pressure_fine
+    //% block="Get pressure"
+    //% subcategory="Air & Weather" advanced
+    export function getPressureFine(): number {
+        return _bme280.getPressure()
+    }
+
+    /**
      * Get the relative humidity in %
      */
     //% blockId=envirobit_get_humidity
@@ -370,6 +400,16 @@ namespace envirobit {
     //% subcategory="Air & Weather"
     export function getHumidity(): number {
         return _bme280.getHumidity() / 1024
+    }
+
+    /**
+     * Get the relative humidity in % * 100
+     */
+    //% blockId=envirobit_get_humidity_fine
+    //% block="Get humidity"
+    //% subcategory="Air & Weather" advanced
+    export function getHumidityFine(): number {
+        return (_bme280.getHumidity() * 100) / 1024
     }
 
     /*
