@@ -1,0 +1,19 @@
+{
+    "name": "envirobit",
+    "version": "0.0.1",
+    "description": "Pimoroni Automation:Bit",
+    "license": "MIT",
+    "dependencies": {
+        "core": "*"
+    },
+    "files": [
+        "README.md",
+        "envirobit.ts",
+        "shims.d.ts",
+        "compensate.cpp"
+    ],
+    "testFiles": [
+        "test.ts"
+    ],
+    "public": true
+}

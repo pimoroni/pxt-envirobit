@@ -1,0 +1,14 @@
+{
+  "name": "pxt-envirobit",
+  "version": "0.0.1",
+  "dependencies": {},
+  "devDependencies": {
+    "pxt": "0.4.0",
+    "pxt-microbit": "0.14.32"
+  },
+  "scripts": {
+    "pxt:init": "pxt target microbit",
+    "pxt:install": "pxt install",
+    "test": "pxt test"
+  }
+}

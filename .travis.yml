@@ -1,0 +1,41 @@
+language: python
+sudo: false
+
+node_js:
+  - "7"
+
+python:
+  - "2.7"
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+      - george-edison55-precise-backports
+      - sourceline: 'ppa:team-gcc-arm-embedded/ppa'
+    packages:
+      - ninja-build
+      - cmake
+      - cmake-data
+      - gcc-arm-embedded
+      - srecord
+      - g++-4.8
+      - libusb-1.0-0-dev
+
+env:
+  - PXT_ENV=production CXX=g++-4.8
+
+install:
+  - nvm install 7
+  - pip install yotta
+  - pip install pyopenssl
+  - npm install
+  - npm run pxt:init
+  - npm run pxt:install
+
+script:
+  - npm run test
+
+cache:
+  directories:
+    - node_modules
