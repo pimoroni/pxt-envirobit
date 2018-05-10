@@ -1,4 +1,4 @@
-//% weight=100 color=#000000 icon="\uf06e" block="Enviro:Bit"
+//% weight=100 color=#000000 icon="\uf043" block="Enviro:Bit"
 namespace envirobit {
 
     //% shim=envirobit::compensatePressure
@@ -253,6 +253,12 @@ namespace envirobit {
         return _bme280.getChipID()
     }
 
+    //%
+    export enum OnOff {
+        Off = 0,
+        On = 1
+    }
+
     /**
      * Set how sensitive the microphone is when detecting claps
      * @param value - sensitivity (0-100)
@@ -260,7 +266,7 @@ namespace envirobit {
     //% blockId=envirobit_set_clap_sensitivity
     //% block="Set clap sensitivty to %value"
     //% value.min=0 value.max=100 value.defl=80
-    //% subcategory="Sound" advanced
+    //% subcategory="Sound"
     export function setClapSensitivity(value: number): void {
         value = Math.clamp(0, 100, value)
         sensitivity = 105 - value
@@ -296,7 +302,7 @@ namespace envirobit {
      * Read the current sound level from the microphone
      */
     //% blockId=envirobit_get_sound_level
-    //% block="Get sound level"
+    //% block="Get sound"
     //% subcategory="Sound"
     export function getSoundLevel(): number {
         return _sound.read()
@@ -308,7 +314,7 @@ namespace envirobit {
     //% blockId=envirobit_set_leds
     //% block="Set LEDs to %state"
     //% subcategory="Colour & Light"
-    export function setLEDs(state: number): void {
+    export function setLEDs(state: OnOff): void {
         _tcs3472.setLEDs(state)
     }
 
@@ -316,7 +322,7 @@ namespace envirobit {
      * Get the light level
      */
     //% blockId=envirobit_get_light_clear
-    //% block="Get light level"
+    //% block="Get light"
     //% subcategory="Colour & Light"
     export function getLight(): number {
         return _tcs3472.light()
@@ -326,7 +332,7 @@ namespace envirobit {
      * Get the amount of red the colour sensor sees
      */
     //% blockId=envirobit_get_light_red
-    //% block="Get red level"
+    //% block="Get red"
     //% subcategory="Colour & Light"
     export function getRed(): number {
         return _tcs3472.rgb()[0]
@@ -336,7 +342,7 @@ namespace envirobit {
      * Get the amount of green the colour sensor sees
      */
     //% blockId=envirobit_get_light_green
-    //% block="Get green level"
+    //% block="Get green"
     //% subcategory="Colour & Light"
     export function getGreen(): number {
         return _tcs3472.rgb()[1]
@@ -346,7 +352,7 @@ namespace envirobit {
      * Get the amount of blue the colour sensor sees
      */
     //% blockId=envirobit_get_light_blue
-    //% block="Get blue level"
+    //% block="Get blue"
     //% subcategory="Colour & Light"
     export function getBlue(): number {
         return _tcs3472.rgb()[2]
@@ -367,7 +373,7 @@ namespace envirobit {
      */
     //% blockId=envirobit_get_temperature_fine
     //% block="Get temperature"
-    //% subcategory="Air & Weather" advanced
+    //% subcategory="Expert"
     export function getTemperatureFine(): number {
         return _bme280.getTemperature()
     }
@@ -387,7 +393,7 @@ namespace envirobit {
      */
     //% blockId=envirobit_get_pressure_fine
     //% block="Get pressure"
-    //% subcategory="Air & Weather" advanced
+    //% subcategory="Expert"
     export function getPressureFine(): number {
         return _bme280.getPressure()
     }
@@ -407,7 +413,7 @@ namespace envirobit {
      */
     //% blockId=envirobit_get_humidity_fine
     //% block="Get humidity"
-    //% subcategory="Air & Weather" advanced
+    //% subcategory="Expert"
     export function getHumidityFine(): number {
         return (_bme280.getHumidity() * 100) / 1024
     }
