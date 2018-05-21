@@ -173,6 +173,11 @@ namespace envirobit {
             smbus.writeByte(this.addr, 0x81, 0x2b)
         }
 
+        setIntegrationTime(time: number): void {
+            time = Math.clamp(0, 255, time / 2.4)
+            smbus.writeByte(this.addr, 0x81, 255 - time)
+        }
+
         setLEDs(state: number): void {
             pins.digitalWritePin(this.leds, state)
         }
@@ -346,6 +351,17 @@ namespace envirobit {
     //% subcategory="Colour & Light"
     export function getGreen(): number {
         return _tcs3472.rgb()[1]
+    }
+
+    /**
+     * Set the integration time of the colour sensor in ms
+     */
+    //% blockId=envirobit_set_integration_time
+    //% block="Set colour integration time %time ms"
+    //% time.min=0 time.max=612 value.defl=500
+    //% subcategory="Expert"
+    export function setColourIntegrationTime(time: number): void {
+        return _tcs3472.setIntegrationTime(time)
     }
 
     /**
