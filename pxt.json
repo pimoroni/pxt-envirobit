@@ -1,6 +1,6 @@
 {
     "name": "envirobit",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "description": "Pimoroni Enviro:Bit",
     "license": "MIT",
     "dependencies": {
