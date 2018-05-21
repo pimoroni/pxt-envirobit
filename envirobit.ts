@@ -174,7 +174,7 @@ namespace envirobit {
         }
 
         setIntegrationTime(time: number): void {
-            time = Math.clamp(0, 255, time / 2.4)
+            time = Math.clamp(0, 255, time * 10 / 24)
             smbus.writeByte(this.addr, 0x81, 255 - time)
         }
 
