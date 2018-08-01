@@ -225,6 +225,7 @@ namespace envirobit {
         threshold: number
         timeout: number
         clap_handlers: Action[]
+        polling: boolean
 
         constructor(pin: AnalogPin = AnalogPin.P2) {
             this.pin = pin
@@ -232,12 +233,18 @@ namespace envirobit {
             this.threshold = 25
             this.timeout = 100
             this.clap_handlers = []
+            this.polling = false
+        }
+
+        startPoll(): void {
+            if(this.polling) return
             control.inBackground(() => {
                 while (true) {
                     this.poll()
                     basic.pause(100)
                 }
             })
+            this.polling = true
         }
 
         setOffset(offset: number) {
@@ -250,6 +257,7 @@ namespace envirobit {
 
         onClap(clap_handler: Action): void {
             this.clap_handlers.push(clap_handler)
+            this.startPoll()
         }
 
         setSensitivity(threshold: number, timeout: number) {
