@@ -6,7 +6,7 @@ This package adds support for the Pimoroni enviro:bit to makecode.microbit.org.
 
 An enviro:bit is required to use this package, grab yours here: https://shop.pimoroni.com/products/enviro-bit
 
-To use this package, go to https://makecode.microbit.org/, click "Advanced" then "Add Package" and search for enviro:bit. 
+To use this package, go to https://makecode.microbit.org/, click "Advanced" then "Add Package" and search for enviro:bit, or paste the URL of this GitHub repository in (https://github.com/pimoroni/pxt-envirobit). 
 
 ## JavaScript Reference
 
