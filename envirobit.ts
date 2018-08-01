@@ -343,12 +343,14 @@ namespace envirobit {
     /**
      * Listen for two claps or loud sounds
      * Returns true if two claps are heard, false if not.
+     * DEPRECATED: Use onClap instead
      * @param timeout - time (in ms) to wait (500-2500)
      */
     //% blockId=envirobit_wait_for_double_clap
-    //% block="Wait %timeout|ms for a double clap"
+    //% block="Listen %timeout|ms for a double clap"
     //% timeout.min=500 timeout.max=2500 timeout.defl=1000
     //% subcategory="Sound"
+    //% color=#444444
     export function waitForDoubleClap(timeout: number = 1000): boolean {
         return _sound.waitForDoubleClap(sensitivity, 500, timeout)
     }
@@ -356,12 +358,14 @@ namespace envirobit {
     /**
      * Listen for a clap or loud sound
      * Returns true if a single clap is heard, false if not.
+     * DEPRECATED: Use onClap instead
      * @param timeout - time (in ms) to wait (500-2500)
      */
     //% blockId=envirobit_wait_for_clap
-    //% block="Wait %timeout|ms for a single clap"
+    //% block="Listen %timeout|ms for a clap"
     //% timeout.min=500 timeout.max=2500 timeout.defl=1000
     //% subcategory="Sound"
+    //% color=#444444
     export function waitForClap(timeout: number = 1000): boolean {
         return _sound.waitForClap(sensitivity, timeout)
     }
