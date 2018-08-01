@@ -226,6 +226,7 @@ namespace envirobit {
         timeout: number
         clap_handler: Action
         polling: boolean
+        clap_time: number
 
         constructor(pin: AnalogPin = AnalogPin.P2) {
             this.pin = pin
@@ -233,6 +234,7 @@ namespace envirobit {
             this.threshold = 25
             this.timeout = 100
             this.polling = false
+            this.clap_time = 0
         }
 
         startPoll(): void {
@@ -244,6 +246,10 @@ namespace envirobit {
                 }
             })
             this.polling = true
+        }
+
+        timeSinceLastClap(): number {
+            return input.runningTime() - this.clap_time
         }
 
         setOffset(offset: number) {
@@ -259,13 +265,17 @@ namespace envirobit {
             this.startPoll()
         }
 
-        setSensitivity(threshold: number, timeout: number) {
+        setThreshold(threshold: number) {
             this.threshold = threshold
+        }
+
+        setTimeout(timeout: number) {
             this.timeout = timeout
         }
 
         poll(): void {
             if (this.waitForClap(this.threshold, this.timeout)) {
+                this.clap_time = input.runningTime()
                 this.clap_handler()
             }
         }
@@ -317,6 +327,16 @@ namespace envirobit {
     }
 
     /**
+     * Get the time since the last clap enviro:bit detected in milliseconds
+     */
+    //% blockId=envirobit_time_since_last_clap
+    //% block="Time since last clap (ms)"
+    //% subcategory="Sound"
+    export function timeSinceLastClap(): number {
+        return _sound.timeSinceLastClap()
+    }
+
+    /**
      * Set how sensitive the microphone is when detecting claps
      * @param value - sensitivity (0-100)
      */
@@ -327,6 +347,7 @@ namespace envirobit {
     export function setClapSensitivity(value: number): void {
         value = Math.clamp(0, 100, value)
         sensitivity = 105 - value
+        _sound.setThreshold(sensitivity);
     }
 
     /**

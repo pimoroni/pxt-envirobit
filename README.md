@@ -70,8 +70,10 @@ basic.forever(() => {
 
 Finally, enviro:bit has a mems microphone which senses the amount of noise in your environment. It's great for detecting loud sounds like claps or shouts so your program can respond to them.
 
-* `envirobit.waitForClap(timeout=1000)` - Wait timeout milliseconds for a clap, return true if one is heard, false if not
-* `envirobit.waitForDoubleClap(timeout=1000)` - Wait timeout milliseconds for a double clap, return true if one is heard, false if not
+* `envirobit.onClap(() => {})` - Perform an action when a clap is detected
+* `envirobit.timeSinceLastClap()` - Get the time (in milliseconds) since a clap was last detected
+* `envirobit.waitForClap(timeout=1000)` - DEPRECATED - Wait timeout milliseconds for a clap, return true if one is heard, false if not
+* `envirobit.waitForDoubleClap(timeout=1000)` - DEPRECATED - Wait timeout milliseconds for a double clap, return true if one is heard, false if not
 
 The sensitivity of `waitForClap` and `waitForDoubleClap` can be tweaked:
 
@@ -81,16 +83,15 @@ You can also get the sound level:
 
 * `envirobit.getSoundLevel()` - Returns the current sound level, should return 0 to 443.
 
-For example this script will toggle micro:bit's LED display on and off when you double clap:
+For example this script will toggle micro:bit's LED display on and off when you clap:
 
 ```typescript
 let lights = false
-lights = false
+
 envirobit.setClapSensitivity(80)
-basic.forever(() => {
-    if (envirobit.waitForDoubleClap(1000)) {
-        lights = !(lights)
-    }
+
+envirobit.onClap(() => {
+    lights = !(lights)
     if (lights) {
         basic.showLeds(`
             . . # . .
@@ -104,6 +105,8 @@ basic.forever(() => {
     }
 })
 ```
+
+To detect double/triple/quadruple claps you could increment a counter and perform your action when it reaches the desired number.
 
 ## License
 
