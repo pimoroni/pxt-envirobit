@@ -275,8 +275,8 @@ namespace envirobit {
 
         poll(): void {
             if (this.waitForClap(this.threshold, this.timeout)) {
-                this.clap_time = input.runningTime()
                 this.clap_handler()
+                this.clap_time = input.runningTime()
             }
         }
 

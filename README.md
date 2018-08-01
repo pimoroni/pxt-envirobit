@@ -106,7 +106,22 @@ envirobit.onClap(() => {
 })
 ```
 
-To detect double/triple/quadruple claps you could increment a counter and perform your action when it reaches the desired number.
+And to do something on double clap and additionally clear the screen after no clap is heard for 2 seconds, you could do:
+
+```typescript
+envirobit.onClap(() => {
+    if (envirobit.timeSinceLastClap() < 500) {
+        basic.showIcon(IconNames.Yes)
+    }
+})
+basic.forever(() => {
+    if (envirobit.timeSinceLastClap() > 2000) {
+        basic.clearScreen()
+    }
+})
+```
+
+To detect triple/quadruple claps you could increment a counter and perform your action when it reaches the desired number.
 
 ## License
 
