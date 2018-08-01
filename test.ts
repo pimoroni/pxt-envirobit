@@ -8,11 +8,6 @@ envirobit.onClap(() => {
     serial.writeLine("CLAP CLAP CLAP!")
 })
 
-envirobit.onClap(() => { 
-    serial.writeLine("CLOP CLOP CLOP!")
-})
-
-
 basic.forever(() => { 
     serial.writeNumber(envirobit.getBME280ChipID())
     serial.writeString(" T: ")

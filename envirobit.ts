@@ -224,7 +224,7 @@ namespace envirobit {
         offset: number
         threshold: number
         timeout: number
-        clap_handlers: Action[]
+        clap_handler: Action
         polling: boolean
 
         constructor(pin: AnalogPin = AnalogPin.P2) {
@@ -232,7 +232,6 @@ namespace envirobit {
             this.offset = 580
             this.threshold = 25
             this.timeout = 100
-            this.clap_handlers = []
             this.polling = false
         }
 
@@ -256,7 +255,7 @@ namespace envirobit {
         }
 
         onClap(clap_handler: Action): void {
-            this.clap_handlers.push(clap_handler)
+            this.clap_handler = clap_handler
             this.startPoll()
         }
 
@@ -267,9 +266,7 @@ namespace envirobit {
 
         poll(): void {
             if (this.waitForClap(this.threshold, this.timeout)) {
-                for (let clap_handler of this.clap_handlers) {
-                    clap_handler()
-                }
+                this.clap_handler()
             }
         }
 
