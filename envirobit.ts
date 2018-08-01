@@ -12,6 +12,7 @@ namespace envirobit {
     }
 
     class bme280 {
+        is_setup: boolean
         addr: number
         dig_t1: uint16
         dig_t2: int16
@@ -39,7 +40,13 @@ namespace envirobit {
         //qnh: number
 
         constructor(addr: number) {
+            this.is_setup = false
             this.addr = addr
+        }
+
+        setup(): void {
+            if (this.is_setup) return
+            this.is_setup = true
             //this.qnh = 101325 // hPa standard ISO atmosphere at sea level
 
             smbus.writeByte(this.addr, 0xe0, 0xb6) // Soft reset
@@ -65,9 +72,9 @@ namespace envirobit {
 
             compensation.push(temp.shift()) // dig_h6 (0xe7)
 
-            serial.redirectToUSB()
-            serial.writeNumbers(compensation)
-            serial.writeLine("")
+            //serial.redirectToUSB()
+            //serial.writeNumbers(compensation)
+            //serial.writeLine("")
 
             this.dig_t1 = compensation.shift()
             this.dig_t2 = compensation.shift()
@@ -94,10 +101,12 @@ namespace envirobit {
         }
 
         getChipID(): number {
+            this.setup()
             return smbus.readBuffer(this.addr, 0xd0, 1)[0]
         }
 
         update(): void {
+            this.setup()
             let raw: Buffer = smbus.readBuffer(this.addr, 0xf7, 8)
 
             let raw_temp: number = (raw[3] << 12) + (raw[4] << 4) + (raw[5] >> 4)
@@ -163,17 +172,25 @@ namespace envirobit {
     }
 
     class tcs3472 {
+        is_setup: boolean
         addr: number
         leds: DigitalPin
 
         constructor(addr: number, leds: DigitalPin = DigitalPin.P8) {
+            this.is_setup = false
             this.addr = addr
             this.leds = leds
+        }
+
+        setup(): void {
+            if (this.is_setup) return
+            this.is_setup = true
             smbus.writeByte(this.addr, 0x80, 0x03)
             smbus.writeByte(this.addr, 0x81, 0x2b)
         }
 
         setIntegrationTime(time: number): void {
+            this.setup()
             time = Math.clamp(0, 255, time * 10 / 24)
             smbus.writeByte(this.addr, 0x81, 255 - time)
         }
@@ -196,6 +213,7 @@ namespace envirobit {
         }
 
         raw(): number[] {
+            this.setup()
             let result: Buffer = smbus.readBuffer(this.addr, 0xb4, pins.sizeOf(NumberFormat.UInt16LE) * 4)
             return smbus.unpack("HHHH", result)
         }
@@ -204,10 +222,22 @@ namespace envirobit {
     class sound {
         pin: AnalogPin
         offset: number
+        threshold: number
+        timeout: number
+        clap_handlers: Action[]
 
         constructor(pin: AnalogPin = AnalogPin.P2) {
             this.pin = pin
             this.offset = 580
+            this.threshold = 25
+            this.timeout = 100
+            this.clap_handlers = []
+            control.inBackground(() => {
+                while (true) {
+                    this.poll()
+                    basic.pause(100)
+                }
+            })
         }
 
         setOffset(offset: number) {
@@ -216,6 +246,23 @@ namespace envirobit {
 
         read(): number {
             return pins.analogReadPin(this.pin) - this.offset
+        }
+
+        onClap(clap_handler: Action): void {
+            this.clap_handlers.push(clap_handler)
+        }
+
+        setSensitivity(threshold: number, timeout: number) {
+            this.threshold = threshold
+            this.timeout = timeout
+        }
+
+        poll(): void {
+            if (this.waitForClap(this.threshold, this.timeout)) {
+                for (let clap_handler of this.clap_handlers) {
+                    clap_handler()
+                }
+            }
         }
 
         waitForClap(threshold: number = 25, timeout: number = 500): boolean {
@@ -275,6 +322,17 @@ namespace envirobit {
     export function setClapSensitivity(value: number): void {
         value = Math.clamp(0, 100, value)
         sensitivity = 105 - value
+    }
+
+    /**
+     * Perform an action when a clap is heard
+     * @param clap_handler - function to run when a clap is detected
+     */
+    //% blockId=envirobit_on_clap
+    //% block="When I hear a clap"
+    //% subcategory="Sound"
+    export function onClap(clap_handler: Action): void {
+        _sound.onClap(clap_handler);
     }
 
     /**

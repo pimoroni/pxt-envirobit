@@ -1,6 +1,18 @@
 serial.redirectToUSB()
 envirobit.setLEDs(1)
 
+let led_state: boolean = false
+
+
+envirobit.onClap(() => { 
+    serial.writeLine("CLAP CLAP CLAP!")
+})
+
+envirobit.onClap(() => { 
+    serial.writeLine("CLOP CLOP CLOP!")
+})
+
+
 basic.forever(() => { 
     serial.writeNumber(envirobit.getBME280ChipID())
     serial.writeString(" T: ")
@@ -15,6 +27,12 @@ basic.forever(() => {
     serial.writeNumber(envirobit.getGreen())
     serial.writeString(" B:")
     serial.writeNumber(envirobit.getBlue())
+    serial.writeString(" S:")
+    serial.writeNumber(envirobit.getSoundLevel())
     serial.writeLine("")
-    control.waitMicros(500000)
+
+    envirobit.setLEDs(led_state ? 1 : 0)
+    led_state = !led_state
+
+    basic.pause(2000)
 })
