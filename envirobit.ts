@@ -226,7 +226,10 @@ namespace envirobit {
         timeout: number
         clap_handler: Action
         polling: boolean
+        watching: boolean
         clap_time: number
+        sample: number
+        samples: number[]
 
         constructor(pin: AnalogPin = AnalogPin.P2) {
             this.pin = pin
@@ -234,7 +237,34 @@ namespace envirobit {
             this.threshold = 25
             this.timeout = 100
             this.polling = false
+            this.watching = false
             this.clap_time = 0
+            this.sample = 0
+            this.samples = [0, 0, 0, 0, 0]
+        }
+
+        watchLevel(): void {
+            if(this.watching) return
+            control.inBackground(() => {
+                while (true) {
+                    this.samples[this.sample] = Math.abs(this.read())
+                    this.sample += 1
+                    this.sample %= 5
+                    basic.pause(100)
+                }
+            })
+            this.watching = true
+        }
+
+        getLevel(): number {
+            let level: number = 0;
+            for (let x: number = 0; x < 5; x++){
+                let sample: number = _sound.samples[x]
+                if (sample > level) {
+                    level = sample
+                }
+            }
+            return level
         }
 
         startPoll(): void {
@@ -398,7 +428,8 @@ namespace envirobit {
     //% block="Get sound"
     //% subcategory="Sound"
     export function getSoundLevel(): number {
-        return _sound.read()
+        _sound.watchLevel()
+        return _sound.getLevel()
     }
 
     /**
