@@ -418,7 +418,7 @@ namespace envirobit {
     //% block="Get light"
     //% subcategory="Colour & Light"
     export function getLight(): number {
-        return _tcs3472.light()
+        return Math.round(_tcs3472.light())
     }
 
     /**
@@ -428,7 +428,7 @@ namespace envirobit {
     //% block="Get red"
     //% subcategory="Colour & Light"
     export function getRed(): number {
-        return _tcs3472.rgb()[0]
+        return Math.round(_tcs3472.rgb()[0])
     }
 
     /**
@@ -438,7 +438,7 @@ namespace envirobit {
     //% block="Get green"
     //% subcategory="Colour & Light"
     export function getGreen(): number {
-        return _tcs3472.rgb()[1]
+        return Math.round(_tcs3472.rgb()[1])
     }
 
     /**
@@ -459,7 +459,7 @@ namespace envirobit {
     //% block="Get blue"
     //% subcategory="Colour & Light"
     export function getBlue(): number {
-        return _tcs3472.rgb()[2]
+        return Math.round(_tcs3472.rgb()[2])
     }
 
     /**
@@ -469,7 +469,17 @@ namespace envirobit {
     //% block="Get temperature"
     //% subcategory="Air & Weather"
     export function getTemperature(): number {
-        return _bme280.getTemperature() / 100
+        return Math.round(_bme280.getTemperature() / 100)
+    }
+
+    /**
+     * Return the temperature in degrees celcius with two decimal places
+     */
+    //% blockId=envirobit_get_temperature_decimal
+    //% block="Get temperature (decimal)"
+    //% subcategory="Expert"
+    export function getTemperatureDecimal(): number {
+        return Math.roundWithPrecision(_bme280.getTemperature() / 100, 2)
     }
 
     /**
@@ -479,7 +489,7 @@ namespace envirobit {
     //% block="Get temperature (x100)"
     //% subcategory="Expert"
     export function getTemperatureFine(): number {
-        return _bme280.getTemperature()
+        return Math.round(_bme280.getTemperature())
     }
 
     /**
@@ -489,11 +499,21 @@ namespace envirobit {
     //% block="Get pressure"
     //% subcategory="Air & Weather"
     export function getPressure(): number {
-        return _bme280.getPressure() / 100
+        return Math.round(_bme280.getPressure() / 100)
     }
 
     /**
-     * Get the air pressure in pascals
+     * Get the air pressure in hPa with two decimal places
+     */
+    //% blockId=envirobit_get_pressure_decimal
+    //% block="Get pressure (decimal)"
+    //% subcategory="Expert"
+    export function getPressureDecimal(): number {
+        return Math.round(_bme280.getPressure() / 100)
+    }
+
+    /**
+     * Get the air pressure in pascals (hPa * 100)
      */
     //% blockId=envirobit_get_pressure_fine
     //% block="Get pressure (x100)"
@@ -509,7 +529,17 @@ namespace envirobit {
     //% block="Get humidity"
     //% subcategory="Air & Weather"
     export function getHumidity(): number {
-        return _bme280.getHumidity() / 1024
+        return Math.round(_bme280.getHumidity() / 1024)
+    }
+
+    /**
+     * Get the relative humidity in % with two decimal places
+     */
+    //% blockId=envirobit_get_humidity_decimal
+    //% block="Get humidity (decimal)"
+    //% subcategory="Expert"
+    export function getHumidityDecimal(): number {
+        return Math.roundWithPrecision(_bme280.getHumidity() / 1024, 2)
     }
 
     /**
@@ -519,7 +549,7 @@ namespace envirobit {
     //% block="Get humidity (x100)"
     //% subcategory="Expert"
     export function getHumidityFine(): number {
-        return (_bme280.getHumidity() * 100) / 1024
+        return Math.round((_bme280.getHumidity() * 100) / 1024)
     }
 
     /*
