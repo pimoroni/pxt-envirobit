@@ -428,6 +428,16 @@ namespace envirobit {
     //% block="Get sound"
     //% subcategory="Sound"
     export function getSoundLevel(): number {
+        return _sound.read()
+    }
+
+    /**
+     * Read the current noise level from the microphone
+     */
+    //% blockId=envirobit_get_noise_level
+    //% block="Get noise level"
+    //% subcategory="Sound"
+    export function getNoiseLevel(): number {
         _sound.watchLevel()
         return _sound.getLevel()
     }
