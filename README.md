@@ -81,7 +81,11 @@ The sensitivity of `waitForClap` and `waitForDoubleClap` can be tweaked:
 
 You can also get the sound level:
 
-* `envirobit.getSoundLevel()` - Returns the current sound level, should return 0 to 443.
+* `envirobit.getSoundLevel()` - Returns the current sound level, should return 0 to +-443.
+
+Or the noise level, averaged over 5 samples:
+
+* `envirobit.getNoiseLevel()` - Returns the current noise level, smoothed over time
 
 For example this script will toggle micro:bit's LED display on and off when you clap:
 

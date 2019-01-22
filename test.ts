@@ -45,6 +45,8 @@ basic.forever(() => {
     serial.writeNumber(envirobit.getBlue())
     serial.writeString(" S:")
     serial.writeNumber(envirobit.getSoundLevel())
+    serial.writeString(" N:")
+    serial.writeNumber(envirobit.getNoiseLevel())
     serial.writeLine("")
 
     if (envirobit.timeSinceLastClap() > 2000) {
