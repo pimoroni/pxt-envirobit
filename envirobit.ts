@@ -11,6 +11,28 @@ namespace envirobit {
         return
     }
 
+    //% shim=envirobit::setHumidityCompensationValuesA
+    function setHumidityCompensationValuesA(dig_H1: number, dig_H2: number, dig_H3: number): void {
+        return
+    }
+
+    //% shim=envirobit::setHumidityCompensationValuesB
+    function setHumidityCompensationValuesB(dig_H4: number, dig_H5: number, dig_H6: number): void {
+        return
+    }
+
+    // awkward hack to get around the three parameter limit for C-bindings.
+    function setHumidityCompensationValues(dig_H1: number, dig_H2: number, dig_H3: number, dig_H4: number, dig_H5: number, dig_H6: number): void {
+        setHumidityCompensationValuesA(dig_H1, dig_H2, dig_H3)
+        setHumidityCompensationValuesA(dig_H4, dig_H5, dig_H6)
+        return
+    }
+
+    //% shim=envirobit::compensateHumidity
+    function compensateHumidity(adc_H: number, t_fine: number): number {
+        return 0
+    }
+
     class bme280 {
         is_setup: boolean
         addr: number
@@ -56,8 +78,10 @@ namespace envirobit {
             smbus.writeByte(this.addr, 0xf5, 0b10010000) // 500ms standby time, 16 filter coef
             control.waitMicros(200000)
 
+            // Registers 0x88 to 0x9F, then 0xA0 padding byte (b) and finally 0xA1
             let compensation: number[] = smbus.unpack("<HhhHhhhhhhhhbB", smbus.readBuffer(this.addr, 0x88, 26))
 
+            // Registers 0xE1 to 0xE7
             let temp: number[] = smbus.unpack("<hBbBbb", smbus.readBuffer(this.addr, 0xe1, 7))
 
             compensation.push(temp.shift()) // first two-byte number is dig_H2 (0xe1 / 0xe2)
@@ -97,7 +121,8 @@ namespace envirobit {
             this.dig_h6 = compensation.shift()
 
             // Hand the necessary pressure compensation values over to C++ for later
-            setCompensationValues(this.dig_p7, this.dig_p8, this.dig_p9);
+            setCompensationValues(this.dig_p7, this.dig_p8, this.dig_p9)
+            setHumidityCompensationValues(this.dig_h1, this.dig_h2, this.dig_h3, this.dig_h4, this.dig_h5, this.dig_h6)
         }
 
         getChipID(): number {
@@ -123,7 +148,7 @@ namespace envirobit {
             var2 = var2 + ((var1*(this.dig_p5))<<1);
             var2 = (var2>>2)+((this.dig_p4)<<16);
             var1 = (((this.dig_p3 * (((var1>>2) * (var1>>2)) >> 13 )) >> 3) + (((this.dig_p2) * var1)>>1))>>18;
-            var1 =((((32768+var1))*(this.dig_p1))>>15);
+            var1 = ((((32768+var1))*(this.dig_p1))>>15);
             if (var1 == 0)
             {
                 this.pressure = 0
@@ -134,6 +159,7 @@ namespace envirobit {
             }
 
 
+            /*
             let h: number = (t_fine - (76800));
             h = (((((raw_hum << 14) - ((this.dig_h4) << 20) - ((this.dig_h5) * h)) +
               (16384)) >> 15) * (((((((h * (this.dig_h6)) >> 10) * (((h *
@@ -142,6 +168,24 @@ namespace envirobit {
             h = (h - (((((h >> 15) * (h >> 15)) >> 7) * (this.dig_h1)) >> 4));
             h = (h < 0 ? 0 : h);
             this.humidity = (h > 419430400 ? 419430400 : h) >> 12;
+            */
+
+            this.humidity = compensateHumidity(raw_hum, t_fine)
+
+            /*
+            let var_H: number = ((t_fine) - 76800.0);
+            var_H = (raw_hum - ((this.dig_h4) * 64.0 + (this.dig_h5) / 16384.0 * var_H)) *
+            ((this.dig_h2) / 65536.0 * (1.0 + (this.dig_h6) / 67108864.0 * var_H *
+            (1.0 + (this.dig_h3) / 67108864.0 * var_H)));
+            var_H = var_H * (1.0 - (this.dig_h1) * var_H / 524288.0);
+            if (var_H > 100.0) {
+                var_H = 100.0;
+            }
+            else if (var_H < 0.0) {
+                var_H = 0.0;
+            }
+            this.humidity = var_H
+            */
 
             //this.altitude = 44330.0 * (1.0 - Math.pow(this.pressure / (this.qnh / 100.0), (1.0 / 5.255)))
         }
