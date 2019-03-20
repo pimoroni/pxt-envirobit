@@ -8,9 +8,7 @@
     },
     "files": [
         "README.md",
-        "envirobit.ts",
-        "shims.d.ts",
-        "compensate.cpp"
+        "envirobit.ts"
     ],
     "testFiles": [
         "test.ts"
