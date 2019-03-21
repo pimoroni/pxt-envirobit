@@ -533,7 +533,7 @@ namespace envirobit {
     //% block="Get pressure (decimal)"
     //% subcategory="Expert"
     export function getPressureDecimal(): number {
-        return Math.round(_bme280.getPressure() / 100.0)
+        return Math.roundWithPrecision(_bme280.getPressure() / 100.0, 2)
     }
 
     /**
