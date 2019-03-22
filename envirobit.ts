@@ -1,16 +1,5 @@
 //% weight=100 color=#000000 icon="\uf043" block="Enviro:Bit"
 namespace envirobit {
-
-    //% shim=envirobit::compensatePressure
-    function compensatePressure(adc_p: number, var1: number, var2: number): number {
-        return 0
-    }
-
-    //% shim=envirobit::setCompensationValues
-    function setCompensationValues(dig_p7: number, dig_p8: number, dig_p9: number): void {
-        return
-    }
-
     class bme280 {
         is_setup: boolean
         addr: number
@@ -51,17 +40,21 @@ namespace envirobit {
 
             smbus.writeByte(this.addr, 0xe0, 0xb6) // Soft reset
             control.waitMicros(200000)
+            smbus.writeByte(this.addr, 0xf2, 0b00000111) // x16 humidity oversampling
+            control.waitMicros(200000)
             smbus.writeByte(this.addr, 0xf4, 0b10110111) // x16 oversampling, normal mode
             control.waitMicros(200000)
             smbus.writeByte(this.addr, 0xf5, 0b10010000) // 500ms standby time, 16 filter coef
             control.waitMicros(200000)
 
+            // Registers 0x88 to 0x9F, then 0xA0 padding byte (b) and finally 0xA1
             let compensation: number[] = smbus.unpack("<HhhHhhhhhhhhbB", smbus.readBuffer(this.addr, 0x88, 26))
 
+            // Registers 0xE1 to 0xE7
             let temp: number[] = smbus.unpack("<hBbBbb", smbus.readBuffer(this.addr, 0xe1, 7))
 
-            compensation.push(temp.shift()) // first two-byte number is dig_H2 (0xe1 / 0xe2)
-            compensation.push(temp.shift()) // second single-byte number is dig_H3 (0xe3)
+            compensation.push(temp.shift()) // first two-byte number is dig_h2 (0xe1 / 0xe2)
+            compensation.push(temp.shift()) // second single-byte number is dig_h3 (0xe3)
 
             let reg_e4: number = temp.shift()
             let reg_e5: number = temp.shift()
@@ -71,10 +64,6 @@ namespace envirobit {
             compensation.push((reg_e5 >> 4) | (reg_e6 << 4)) // dig_h5
 
             compensation.push(temp.shift()) // dig_h6 (0xe7)
-
-            //serial.redirectToUSB()
-            //serial.writeNumbers(compensation)
-            //serial.writeLine("")
 
             this.dig_t1 = compensation.shift()
             this.dig_t2 = compensation.shift()
@@ -95,9 +84,6 @@ namespace envirobit {
             this.dig_h4 = compensation.shift()
             this.dig_h5 = compensation.shift()
             this.dig_h6 = compensation.shift()
-
-            // Hand the necessary pressure compensation values over to C++ for later
-            setCompensationValues(this.dig_p7, this.dig_p8, this.dig_p9);
         }
 
         getChipID(): number {
@@ -116,34 +102,31 @@ namespace envirobit {
             let var1: number = ((((raw_temp>>3) - (this.dig_t1<<1))) * (this.dig_t2)) >> 11;
             let var2: number = (((((raw_temp>>4) - (this.dig_t1)) * ((raw_temp>>4) - (this.dig_t1))) >> 12) * (this.dig_t3)) >> 14;
             let t_fine: number = var1 + var2;
-            this.temperature = (t_fine * 5 + 128) >> 8;
-
-            var1 = ((t_fine)>>1) - 64000;
-            var2 = (((var1>>2) * (var1>>2)) >> 11 ) * (this.dig_p6);
-            var2 = var2 + ((var1*(this.dig_p5))<<1);
-            var2 = (var2>>2)+((this.dig_p4)<<16);
-            var1 = (((this.dig_p3 * (((var1>>2) * (var1>>2)) >> 13 )) >> 3) + (((this.dig_p2) * var1)>>1))>>18;
-            var1 =((((32768+var1))*(this.dig_p1))>>15);
-            if (var1 == 0)
-            {
-                this.pressure = 0
+            this.temperature = ((t_fine * 5 + 128) >> 8)
+            var1 = (t_fine >> 1) - 64000
+            var2 = (((var1 >> 2) * (var1 >> 2)) >> 11) * this.dig_p6
+            var2 = var2 + ((var1 * this.dig_p5) << 1)
+            var2 = (var2 >> 2) + (this.dig_p4 << 16)
+            var1 = (((this.dig_p3 * ((var1 >> 2) * (var1 >> 2)) >> 13) >> 3) + (((this.dig_p2) * var1) >> 1)) >> 18
+            var1 = ((32768 + var1) * this.dig_p1) >> 15
+            if (var1 == 0) {
+                return // avoid exception caused by division by zero
             }
-            else {
-                // Dive into C++ to use unsigned 32bit integer type and avoid overflows =/
-                this.pressure = compensatePressure(raw_press, var1, var2) 
-            }
+        
+            let _p = ((1048576 - raw_press) - (var2 >> 12)) * 3125
+            _p = (_p / var1) * 2;
+            var1 = (this.dig_p9 * (((_p >> 3) * (_p >> 3)) >> 13)) >> 12
+            var2 = (((_p >> 2)) * this.dig_p8) >> 13
+            this.pressure = _p + ((var1 + var2 + this.dig_p7) >> 4)
 
+            var1 = t_fine - 76800
+            var2 = (((raw_hum << 14) - (this.dig_h4 << 20) - (this.dig_h5 * var1)) + 16384) >> 15
+            var1 = var2 * (((((((var1 * this.dig_h6) >> 10) * (((var1 * this.dig_h3) >> 11) + 32768)) >> 10) + 2097152) * this.dig_h2 + 8192) >> 14)
+            var2 = var1 - (((((var1 >> 15) * (var1 >> 15)) >> 7) * this.dig_h1) >> 4)
+            if (var2 < 0) var2 = 0
+            if (var2 > 419430400) var2 = 419430400
+            this.humidity = (var2 >> 12)
 
-            let h: number = (t_fine - (76800));
-            h = (((((raw_hum << 14) - ((this.dig_h4) << 20) - ((this.dig_h5) * h)) +
-              (16384)) >> 15) * (((((((h * (this.dig_h6)) >> 10) * (((h *
-              (this.dig_h3)) >> 11) + (32768))) >> 10) + (2097152)) *
-              (this.dig_h2) + 8192) >> 14));
-            h = (h - (((((h >> 15) * (h >> 15)) >> 7) * (this.dig_h1)) >> 4));
-            h = (h < 0 ? 0 : h);
-            this.humidity = (h > 419430400 ? 419430400 : h) >> 12;
-
-            //this.altitude = 44330.0 * (1.0 - Math.pow(this.pressure / (this.qnh / 100.0), (1.0 / 5.255)))
         }
                 
         /*setQNH(qnh: number): void {
@@ -510,7 +493,7 @@ namespace envirobit {
     //% block="Get temperature"
     //% subcategory="Air & Weather"
     export function getTemperature(): number {
-        return Math.round(_bme280.getTemperature() / 100)
+        return Math.round(_bme280.getTemperature() / 100.0)
     }
 
     /**
@@ -520,7 +503,7 @@ namespace envirobit {
     //% block="Get temperature (decimal)"
     //% subcategory="Expert"
     export function getTemperatureDecimal(): number {
-        return Math.roundWithPrecision(_bme280.getTemperature() / 100, 2)
+        return Math.roundWithPrecision(_bme280.getTemperature() / 100.0, 2)
     }
 
     /**
@@ -540,7 +523,7 @@ namespace envirobit {
     //% block="Get pressure"
     //% subcategory="Air & Weather"
     export function getPressure(): number {
-        return Math.round(_bme280.getPressure() / 100)
+        return Math.round(_bme280.getPressure() / 100.0)
     }
 
     /**
@@ -550,7 +533,7 @@ namespace envirobit {
     //% block="Get pressure (decimal)"
     //% subcategory="Expert"
     export function getPressureDecimal(): number {
-        return Math.round(_bme280.getPressure() / 100)
+        return Math.roundWithPrecision(_bme280.getPressure() / 100.0, 2)
     }
 
     /**
@@ -570,7 +553,7 @@ namespace envirobit {
     //% block="Get humidity"
     //% subcategory="Air & Weather"
     export function getHumidity(): number {
-        return Math.round(_bme280.getHumidity() / 1024)
+        return Math.round(_bme280.getHumidity() / 1024.0)
     }
 
     /**
@@ -580,7 +563,7 @@ namespace envirobit {
     //% block="Get humidity (decimal)"
     //% subcategory="Expert"
     export function getHumidityDecimal(): number {
-        return Math.roundWithPrecision(_bme280.getHumidity() / 1024, 2)
+        return Math.roundWithPrecision(_bme280.getHumidity() / 1024.0, 2)
     }
 
     /**
@@ -590,7 +573,7 @@ namespace envirobit {
     //% block="Get humidity (x100)"
     //% subcategory="Expert"
     export function getHumidityFine(): number {
-        return Math.round((_bme280.getHumidity() * 100) / 1024)
+        return Math.round((_bme280.getHumidity() * 100.0) / 1024.0)
     }
 
     /*
