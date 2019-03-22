@@ -1,3 +1,8 @@
+# 0.0.5
+
+* Fixed `getHumidity`
+* Fixed `getPressureDecimal`
+
 # 0.0.4
 
 * Restored original functionality of `getSoundLevel`
