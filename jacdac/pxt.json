@@ -1,12 +1,16 @@
 {
-    "name": "jacdac",
+    "name": "jacdac-envirobit",
     "dependencies": {
         "core": "*",
         "radio": "*",
-        "microphone": "*"
+        "microphone": "*",
+        "envirobit": "github:pelikhan/pxt-envirobit#v0.0.5",
+        "jacdac": "github:microsoft/pxt-jacdac#v0.8.24",
+        "jacdac-temperature": "github:microsoft/pxt-jacdac/temperature#v0.8.24",
+        "jacdac-humidity": "github:microsoft/pxt-jacdac/humidity#v0.8.24",
+        "jacdac-air-pressure": "github:microsoft/pxt-jacdac/air-pressure#v0.8.24"
     },
     "files": [
-        "main.blocks",
         "main.ts",
         "README.md"
     ],
@@ -20,5 +24,5 @@
     "supportedTargets": [
         "microbit"
     ],
-    "preferredEditor": "blocksprj"
+    "preferredEditor": "tsprj"
 }
