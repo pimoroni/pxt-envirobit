@@ -9,7 +9,9 @@
         "jacdac": "github:microsoft/pxt-jacdac#v0.9.1",
         "jacdac-temperature": "github:microsoft/pxt-jacdac/temperature#v0.9.1",
         "jacdac-humidity": "github:microsoft/pxt-jacdac/humidity#v0.9.1",
-        "jacdac-air-pressure": "github:microsoft/pxt-jacdac/air-pressure#v0.9.1"
+        "jacdac-air-pressure": "github:microsoft/pxt-jacdac/air-pressure#v0.9.1",
+        "jacdac-sound-level": "github:microsoft/pxt-jacdac/sound-level#v0.9.1",
+        "jacdac-color": "github:microsoft/pxt-jacdac/color#v0.9.1"
     },
     "files": [
         "main.ts",
