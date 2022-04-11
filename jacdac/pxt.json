@@ -1,10 +1,11 @@
 {
     "name": "jacdac-envirobit",
+    "version": "0.0.6",
     "dependencies": {
         "core": "*",
         "radio": "*",
         "microphone": "*",
-        "envirobit": "github:pelikhan/pxt-envirobit#v0.0.5",
+        "envirobit": "github:pelikhan/pxt-envirobit",
         "jacdac": "github:microsoft/pxt-jacdac#v0.9.1",
         "jacdac-temperature": "github:microsoft/pxt-jacdac/temperature#v0.9.1",
         "jacdac-humidity": "github:microsoft/pxt-jacdac/humidity#v0.9.1",
