@@ -6,12 +6,12 @@
         "radio": "*",
         "microphone": "*",
         "envirobit": "github:pelikhan/pxt-envirobit",
-        "jacdac": "github:microsoft/pxt-jacdac#v0.9.1",
-        "jacdac-temperature": "github:microsoft/pxt-jacdac/temperature#v0.9.1",
-        "jacdac-humidity": "github:microsoft/pxt-jacdac/humidity#v0.9.1",
-        "jacdac-air-pressure": "github:microsoft/pxt-jacdac/air-pressure#v0.9.1",
-        "jacdac-sound-level": "github:microsoft/pxt-jacdac/sound-level#v0.9.1",
-        "jacdac-color": "github:microsoft/pxt-jacdac/color#v0.9.1"
+        "jacdac": "github:microsoft/pxt-jacdac#v0.9.2",
+        "jacdac-temperature": "github:microsoft/pxt-jacdac/temperature#v0.9.2",
+        "jacdac-humidity": "github:microsoft/pxt-jacdac/humidity#v0.9.2",
+        "jacdac-air-pressure": "github:microsoft/pxt-jacdac/air-pressure#v0.9.2",
+        "jacdac-sound-level": "github:microsoft/pxt-jacdac/sound-level#v0.9.2",
+        "jacdac-color": "github:microsoft/pxt-jacdac/color#v0.9.2"
     },
     "files": [
         "main.ts",
