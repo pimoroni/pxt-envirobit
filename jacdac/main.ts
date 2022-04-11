@@ -31,33 +31,37 @@ namespace modules {
 
 namespace servers {
     function start() {
-        jacdac.startSelfServers(() => [
-            jacdac.createSimpleSensorServer(
-                jacdac.SRV_TEMPERATURE,
-                jacdac.TemperatureRegPack.Temperature,
-                () => envirobit.getTemperatureFine() / 100.0
-            ),
-            jacdac.createSimpleSensorServer(
-                jacdac.SRV_HUMIDITY,
-                jacdac.HumidityRegPack.Humidity,
-                () => envirobit.getHumidityFine() / 10000.0
-            ),
-            jacdac.createSimpleSensorServer(
-                jacdac.SRV_AIR_PRESSURE,
-                jacdac.AirPressureRegPack.Pressure,
-                () => envirobit.getPressureFine() / 100.0
-            ),
-            jacdac.createSimpleSensorServer(
+        jacdac.startSelfServers(() => {
+            const soundLevelServer = jacdac.createSimpleSensorServer(
                 jacdac.SRV_SOUND_LEVEL,
                 jacdac.SoundLevelRegPack.SoundLevel,
                 () => envirobit.getSoundLevel() / 443.0
-            ),
-            jacdac.createMultiSensorServer(
-                jacdac.SRV_COLOR,
-                jacdac.ColorRegPack.Color,
-                () => [envirobit.getRed() / 255.0, envirobit.getGreen() / 255.0, envirobit.getBlue() / 255.0]
             )
-        ])
+            envirobit.onClap(() => soundLevelServer.sendEvent(jacdac.SoundLevelEvent.Loud))
+            return [
+                jacdac.createSimpleSensorServer(
+                    jacdac.SRV_TEMPERATURE,
+                    jacdac.TemperatureRegPack.Temperature,
+                    () => envirobit.getTemperatureFine() / 100.0
+                ),
+                jacdac.createSimpleSensorServer(
+                    jacdac.SRV_HUMIDITY,
+                    jacdac.HumidityRegPack.Humidity,
+                    () => envirobit.getHumidityFine() / 10000.0
+                ),
+                jacdac.createSimpleSensorServer(
+                    jacdac.SRV_AIR_PRESSURE,
+                    jacdac.AirPressureRegPack.Pressure,
+                    () => envirobit.getPressureFine() / 100.0
+                ),
+                soundLevelServer,
+                jacdac.createMultiSensorServer(
+                    jacdac.SRV_COLOR,
+                    jacdac.ColorRegPack.Color,
+                    () => [envirobit.getRed() / 255.0, envirobit.getGreen() / 255.0, envirobit.getBlue() / 255.0]
+                )
+            ]
+        })
     }
     start()
 }
