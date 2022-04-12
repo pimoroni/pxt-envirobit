@@ -6,12 +6,12 @@
         "radio": "*",
         "microphone": "*",
         "envirobit": "github:pelikhan/pxt-envirobit",
-        "jacdac": "github:microsoft/pxt-jacdac#v0.9.3",
-        "jacdac-temperature": "github:microsoft/pxt-jacdac/temperature#v0.9.3",
-        "jacdac-humidity": "github:microsoft/pxt-jacdac/humidity#v0.9.3",
-        "jacdac-air-pressure": "github:microsoft/pxt-jacdac/air-pressure#v0.9.3",
-        "jacdac-sound-level": "github:microsoft/pxt-jacdac/sound-level#v0.9.3",
-        "jacdac-color": "github:microsoft/pxt-jacdac/color#v0.9.3"
+        "jacdac": "github:microsoft/pxt-jacdac#v0.9.4",
+        "jacdac-temperature": "github:microsoft/pxt-jacdac/temperature#v0.9.4",
+        "jacdac-humidity": "github:microsoft/pxt-jacdac/humidity#v0.9.4",
+        "jacdac-air-pressure": "github:microsoft/pxt-jacdac/air-pressure#v0.9.4",
+        "jacdac-sound-level": "github:microsoft/pxt-jacdac/sound-level#v0.9.4",
+        "jacdac-color": "github:microsoft/pxt-jacdac/color#v0.9.4"
     },
     "files": [
         "main.ts",
@@ -21,7 +21,7 @@
         "test.ts"
     ],
     "targetVersions": {
-        "target": "4.1.17",
+        "target": "4.0.18",
         "targetId": "microbit"
     },
     "supportedTargets": [

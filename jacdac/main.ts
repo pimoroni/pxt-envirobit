@@ -30,14 +30,26 @@ namespace modules {
 }
 
 namespace servers {
+    class SoundLevelServer extends jacdac.SimpleSensorServer {
+        threshold = 0.25
+        constructor() {
+            super(jacdac.SRV_SOUND_LEVEL, jacdac.SoundLevelRegPack.SoundLevel,
+                () => envirobit.getSoundLevel() / 443.0)
+            envirobit.onClap(() => this.sendEvent(jacdac.SoundLevelEvent.Loud))
+        }
+
+        handleCustomCommand(pkt: jacdac.JDPacket) {
+            const newThreshold = this.handleRegFormat(pkt,
+                jacdac.SoundLevelReg.LoudThreshold, jacdac.SoundLevelRegPack.LoudThreshold,
+                [this.threshold])[0]
+            if (pkt.isRegSet && !isNaN(newThreshold))
+                envirobit.setClapSensitivity((newThreshold * 100) | 0)
+            super.handleCustomCommand(pkt)
+        }
+    }
+
     function start() {
         jacdac.startSelfServers(() => {
-            const soundLevelServer = jacdac.createSimpleSensorServer(
-                jacdac.SRV_SOUND_LEVEL,
-                jacdac.SoundLevelRegPack.SoundLevel,
-                () => envirobit.getSoundLevel() / 443.0
-            )
-            envirobit.onClap(() => soundLevelServer.sendEvent(jacdac.SoundLevelEvent.Loud))
             return [
                 jacdac.createSimpleSensorServer(
                     jacdac.SRV_TEMPERATURE,
@@ -54,7 +66,7 @@ namespace servers {
                     jacdac.AirPressureRegPack.Pressure,
                     () => envirobit.getPressureFine() / 100.0
                 ),
-                soundLevelServer,
+                new SoundLevelServer(),
                 jacdac.createMultiSensorServer(
                     jacdac.SRV_COLOR,
                     jacdac.ColorRegPack.Color,
