@@ -49,6 +49,7 @@ namespace servers {
     }
 
     function start() {
+        jacdac.productIdentifier = 0x3da1c67d
         jacdac.startSelfServers(() => {
             return [
                 jacdac.createSimpleSensorServer(
