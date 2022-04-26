@@ -1,17 +1,17 @@
 {
-    "name": "jacdac-envirobit",
+    "name": "envirobit-jacdac",
     "version": "0.0.7",
     "dependencies": {
         "core": "*",
         "radio": "*",
         "microphone": "*",
         "envirobit": "github:pelikhan/pxt-envirobit",
-        "jacdac": "github:microsoft/pxt-jacdac#v0.9.4",
-        "jacdac-temperature": "github:microsoft/pxt-jacdac/temperature#v0.9.4",
-        "jacdac-humidity": "github:microsoft/pxt-jacdac/humidity#v0.9.4",
-        "jacdac-air-pressure": "github:microsoft/pxt-jacdac/air-pressure#v0.9.4",
-        "jacdac-sound-level": "github:microsoft/pxt-jacdac/sound-level#v0.9.4",
-        "jacdac-color": "github:microsoft/pxt-jacdac/color#v0.9.4"
+        "jacdac": "github:microsoft/pxt-jacdac#v0.10.3",
+        "jacdac-temperature": "github:microsoft/pxt-jacdac/temperature#v0.10.3",
+        "jacdac-humidity": "github:microsoft/pxt-jacdac/humidity#v0.10.3",
+        "jacdac-air-pressure": "github:microsoft/pxt-jacdac/air-pressure#v0.10.3",
+        "jacdac-sound-level": "github:microsoft/pxt-jacdac/sound-level#v0.10.3",
+        "jacdac-color": "github:microsoft/pxt-jacdac/color#v0.10.3"
     },
     "files": [
         "main.ts",
@@ -21,7 +21,7 @@
         "test.ts"
     ],
     "targetVersions": {
-        "target": "4.0.18",
+        "target": "4.1.24",
         "targetId": "microbit"
     },
     "supportedTargets": [
