@@ -30,24 +30,6 @@ namespace modules {
 }
 
 namespace servers {
-    class SoundLevelServer extends jacdac.SimpleSensorServer {
-        threshold = 0.25
-        constructor() {
-            super(jacdac.SRV_SOUND_LEVEL, jacdac.SoundLevelRegPack.SoundLevel,
-                () => envirobit.getSoundLevel() / 443.0)
-            envirobit.onClap(() => this.sendEvent(jacdac.SoundLevelEvent.Loud))
-        }
-
-        handleCustomCommand(pkt: jacdac.JDPacket) {
-            const newThreshold = this.handleRegFormat(pkt,
-                jacdac.SoundLevelReg.LoudThreshold, jacdac.SoundLevelRegPack.LoudThreshold,
-                [this.threshold])[0]
-            if (pkt.isRegSet && !isNaN(newThreshold))
-                envirobit.setClapSensitivity((newThreshold * 100) | 0)
-            super.handleCustomCommand(pkt)
-        }
-    }
-
     function start() {
         jacdac.productIdentifier = 0x3da1c67d
         jacdac.deviceDescription = "Pimoroni enviro:bit"
@@ -71,12 +53,18 @@ namespace servers {
                     () => envirobit.getPressureFine() / 100.0, {
                     statusCode: jacdac.SystemStatusCodes.Initializing
                 }),
-                new SoundLevelServer(),
+                jacdac.createSimpleSensorServer(
+                    jacdac.SRV_SOUND_LEVEL,
+                    jacdac.SoundLevelRegPack.SoundLevel,
+                    () => envirobit.getSoundLevel() / 443, {
+                        statusCode: jacdac.SystemStatusCodes.Initializing
+                    }),
                 jacdac.createMultiSensorServer(
                     jacdac.SRV_COLOR,
                     jacdac.ColorRegPack.Color,
-                    () => [envirobit.getRed() / 255.0, envirobit.getGreen() / 255.0, envirobit.getBlue() / 255.0]
-                )
+                    () => [envirobit.getRed() / 255.0, envirobit.getGreen() / 255.0, envirobit.getBlue() / 255.0], {
+                    statusCode: jacdac.SystemStatusCodes.Initializing
+                })
             ]
 
             control.runInParallel(() => {
