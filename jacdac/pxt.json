@@ -5,7 +5,7 @@
         "core": "*",
         "radio": "*",
         "microphone": "*",
-        "envirobit": "github:pelikhan/pxt-envirobit",
+        "pxt-envirobit": "github:pelikhan/pxt-envirobit",
         "jacdac": "github:microsoft/pxt-jacdac#v0.10.27",
         "jacdac-temperature": "github:microsoft/pxt-jacdac/temperature#v0.10.27",
         "jacdac-humidity": "github:microsoft/pxt-jacdac/humidity#v0.10.27",
