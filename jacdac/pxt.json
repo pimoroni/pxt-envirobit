@@ -1,0 +1,31 @@
+{
+    "name": "envirobit-jacdac",
+    "version": "0.0.13",
+    "dependencies": {
+        "core": "*",
+        "radio": "*",
+        "microphone": "*",
+        "pxt-envirobit": "github:pimoroni/pxt-envirobit",
+        "jacdac": "github:microsoft/pxt-jacdac#v0.10.41",
+        "jacdac-temperature": "github:microsoft/pxt-jacdac/temperature#v0.10.41",
+        "jacdac-humidity": "github:microsoft/pxt-jacdac/humidity#v0.10.41",
+        "jacdac-air-pressure": "github:microsoft/pxt-jacdac/air-pressure#v0.10.41",
+        "jacdac-sound-level": "github:microsoft/pxt-jacdac/sound-level#v0.10.41",
+        "jacdac-color": "github:microsoft/pxt-jacdac/color#v0.10.41"
+    },
+    "files": [
+        "main.ts",
+        "README.md"
+    ],
+    "testFiles": [
+        "test.ts"
+    ],
+    "targetVersions": {
+        "target": "4.1.45",
+        "targetId": "microbit"
+    },
+    "supportedTargets": [
+        "microbit"
+    ],
+    "preferredEditor": "tsprj"
+}
